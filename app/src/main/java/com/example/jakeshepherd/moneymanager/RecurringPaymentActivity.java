@@ -95,6 +95,9 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                     db.insertData(name, amount);
 
                     billController.addBill(newBill);
+                    /**
+                     * best to comment below out when developing
+                     */
                     notifyPeople(newBill);
 
                     billController.getBillsDueToday();
@@ -106,9 +109,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                     boolean dateIsNull = (dueDate == null);
                     boolean nameIsNull = (name.equals(""));
 
-                    db.insertData(name, amount);
-
-                    String snackText = String.format("Something was NULL!\nisNull -> Amount: %s  Date: %s  Name: %s", amountIsNull, dateIsNull, nameIsNull);
+                    String snackText = String.format("Please fill in all details", amountIsNull, dateIsNull, nameIsNull);
                     Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
             }
