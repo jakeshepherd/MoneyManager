@@ -98,7 +98,9 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                     /**
                      * best to comment below out when developing
                      */
-                    notifyPeople(newBill);
+                    if (checkIfUserWantsToEmail()) {
+                        notifyPeople(newBill);
+                    }
 
                     billController.getBillsDueToday();
 
@@ -114,6 +116,11 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private boolean checkIfUserWantsToEmail() {
+        // TODO: add pop-up/option to choose to and who notify
+        return false; // false to prevent email pop up each time a bill is added
     }
 
     private void addChangeDateButtonListener() {
