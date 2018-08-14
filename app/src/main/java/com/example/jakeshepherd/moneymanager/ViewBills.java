@@ -26,6 +26,7 @@ public class ViewBills extends AppCompatActivity {
         StringBuffer buffer = new StringBuffer();
         Cursor res = db.getAllData();
         while(res.moveToNext()) {
+            buffer.append("------------------------------\n");
             buffer.append("Bill number " + res.getString(0) + "\n");
             buffer.append("Name: " + res.getString(1) + "\n");
             buffer.append("Amount: " + res.getString(2) + "\n");

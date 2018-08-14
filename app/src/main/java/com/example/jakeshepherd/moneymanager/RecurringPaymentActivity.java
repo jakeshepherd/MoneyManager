@@ -1,5 +1,6 @@
 package com.example.jakeshepherd.moneymanager;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +14,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Console;
+import java.lang.annotation.Documented;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,9 +24,6 @@ import java.util.Locale;
 
 public class RecurringPaymentActivity extends AppCompatActivity {
 
-    /**
-     * TODO need to remove sort code and account number
-     */
     Database db;
 
     private Button addPaymentButton;
@@ -41,6 +42,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recurring_payment);
 
         this.billController = new BillController();
+
         db = new Database(this);
 
         setupNodes();
@@ -82,8 +84,6 @@ public class RecurringPaymentActivity extends AppCompatActivity {
 
                 try {
                     dueDate = (new SimpleDateFormat("dd/MM/yyyy", Locale.UK)).parse(dueDateToSetBill);
-                    TextView textDate = findViewById(R.id.textDate);
-                    textDate.setText(dueDate.toString());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -92,16 +92,16 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                     Bill newBill = new Bill(amount, name, dueDate);
 
                     System.out.println("Due: " + dueDate.toString());
-                    boolean inserted = db.insertData(name, amount, String.valueOf(dueDate));
-
-                    if(inserted){
-                        System.out.println("Bill data added");
-                    }else{
-                        System.out.println("Bill addition failed");
-                    }
+                    db.insertData(name, amount);
 
                     billController.addBill(newBill);
-                    notifyPeople(newBill);
+                    /**
+                     * best to comment below out when developing
+                     */
+                    if (checkIfUserWantsToEmail()) {
+                        notifyPeople(newBill);
+                    }
+
                     billController.getBillsDueToday();
 
                     String snackText = String.format("New recurring payment of £%s is due on %s. Payable to %s.", amount, dueDate.toString(), name);
@@ -116,6 +116,11 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private boolean checkIfUserWantsToEmail() {
+        // TODO: add pop-up/option to choose to and who notify
+        return false; // false to prevent email pop up each time a bill is added
     }
 
     private void addChangeDateButtonListener() {
@@ -166,4 +171,6 @@ public class RecurringPaymentActivity extends AppCompatActivity {
             Toast.makeText(RecurringPaymentActivity.this, "There has been an error. Cannot send an email at this time.", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 }
