@@ -1,10 +1,5 @@
 package com.example.jakeshepherd.moneymanager;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
-
 import java.util.Date;
 
 /**

@@ -6,8 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -43,11 +41,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(recurPaymentIntent);
             }
         });
-    }
-
-    private void throwWarningMessage(String msg) {
-        Context c = getApplicationContext();
-        Toast t = Toast.makeText(c, msg, Toast.LENGTH_SHORT);
-        t.show();
     }
 }

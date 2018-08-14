@@ -10,10 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.jakeshepherd.moneymanager.Database;
-import com.example.jakeshepherd.moneymanager.R;
-import com.example.jakeshepherd.moneymanager.ViewBills;
-
 public class DeleteData extends AppCompatActivity {
 
     Database db;
@@ -43,11 +39,6 @@ public class DeleteData extends AppCompatActivity {
                 EditText billToDelete = findViewById(R.id.editBillDeletion);
                 String billNum = billToDelete.getText().toString();
 
-                /**
-                 * this will delete the specified row
-                 * could look into how this is implemented in order to search for rows.
-                 */
-
                 if(billNum.equals("")){
                     billToDelete.setError("Fill in");
                     showMessage("Please enter a bill number");
@@ -62,17 +53,14 @@ public class DeleteData extends AppCompatActivity {
                         startActivity(viewBills);
                     }
                 }
-
-
-
             }
         });
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent back = new Intent(getBaseContext(), ViewBills.class);
-                startActivity(back);
+                Intent popup = new Intent(getBaseContext(), DeleteOrUpdate.class);
+                startActivity(popup);
             }
         });
     }

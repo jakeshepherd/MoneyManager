@@ -74,7 +74,12 @@ public class UpdateData extends AppCompatActivity {
                 if((billNumString.equals("")) || (nameString.equals(""))){
                     showMessage("Please fill in all details");
                 }else{
-                    db.updateData(billNumString, nameString, amountFloat);
+                    boolean updated = db.updateData(billNumString, nameString, amountFloat, String.valueOf(dueDate));
+                    if(updated){
+                        System.out.println("Bill data added");
+                    }else{
+                        System.out.println("Bill addition failed");
+                    }
                     Intent viewBills = new Intent(getBaseContext(), ViewBills.class);
                     startActivity(viewBills);
                 }
