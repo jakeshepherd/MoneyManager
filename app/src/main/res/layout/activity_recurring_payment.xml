@@ -14,7 +14,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Add Recurring Payment"
+        android:text="@string/add_recurring_payment"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,11 +22,11 @@
     <TextView
         android:id="@+id/AmountLabel"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="17dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Amount: "
+        android:text="Amount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/RecPayTitle" />
 
@@ -49,7 +49,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Due Date:"
+        android:text="Due date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/AmountField" />
 
@@ -60,7 +60,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:text="Payee Details"
+        android:text="payee_details"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recurSwitch" />
@@ -72,7 +72,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Name: "
+        android:text="Name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/PayeeDetailTitle" />
 
@@ -89,59 +89,13 @@
         app:layout_constraintTop_toBottomOf="@+id/PayeeDetailTitle" />
 
     <TextView
-        android:id="@+id/AccNumLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Account Number: "
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/PayeeNameField" />
-
-    <EditText
-        android:id="@+id/AccNumField"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:ems="10"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/AccNumLabel"
-        app:layout_constraintTop_toBottomOf="@+id/PayeeNameField" />
-
-    <TextView
-        android:id="@+id/SortCodeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Sort Code: "
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/SortCodeField" />
-
-    <EditText
-        android:id="@+id/SortCodeField"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:ems="10"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/SortCodeLabel"
-        app:layout_constraintTop_toBottomOf="@+id/AccNumField" />
-
-    <TextView
         android:id="@+id/RecPaySwitchLabel"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="18dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Recurring Payment?"
+        android:text="Recurring payment"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/DueDateLabel" />
 
@@ -162,11 +116,10 @@
         android:layout_marginLeft="145dp"
         android:layout_marginRight="145dp"
         android:layout_marginStart="145dp"
-        android:layout_marginTop="32dp"
-        android:text="Add Payment"
+        android:text="Add payment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SortCodeField" />
+        tools:layout_editor_absoluteY="410dp" />
 
     <TextView
         android:id="@+id/ChosenDateLabel"
@@ -185,7 +138,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:text="Change"
+        android:text="change"
         app:layout_constraintStart_toEndOf="@+id/ChosenDateLabel"
         app:layout_constraintTop_toBottomOf="@+id/AmountField" />
 

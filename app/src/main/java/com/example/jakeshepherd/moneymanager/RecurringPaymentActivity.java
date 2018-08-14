@@ -92,7 +92,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                     Bill newBill = new Bill(amount, name, dueDate);
 
                     System.out.println("Due: " + dueDate.toString());
-                    db.insertData(name, amount);
+                    db.insertData(name, amount, String.valueOf(dueDate));
 
                     billController.addBill(newBill);
                     /**

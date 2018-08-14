@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -18,10 +17,11 @@ public class ViewBills extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_bills);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         db = new Database(this);
+
 
         StringBuffer buffer = new StringBuffer();
         Cursor res = db.getAllData();
@@ -30,13 +30,13 @@ public class ViewBills extends AppCompatActivity {
             buffer.append("Bill number " + res.getString(0) + "\n");
             buffer.append("Name: " + res.getString(1) + "\n");
             buffer.append("Amount: " + res.getString(2) + "\n");
+            buffer.append("Due date: " + res.getString(3) + "\n");
             buffer.append("------------------------------\n\n");
         }
         TextView scrollableText = findViewById(R.id.TextData);
         scrollableText.setText(buffer.toString());
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,5 +44,7 @@ public class ViewBills extends AppCompatActivity {
                 startActivity(popup);
             }
         });
+
+
     }
 }

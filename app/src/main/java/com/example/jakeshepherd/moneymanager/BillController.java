@@ -1,6 +1,5 @@
 package com.example.jakeshepherd.moneymanager;
 
-import java.io.Console;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

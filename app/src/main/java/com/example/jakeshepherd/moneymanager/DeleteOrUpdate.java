@@ -24,7 +24,7 @@ public class DeleteOrUpdate extends AppCompatActivity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width*0.8), (int) (height*0.8));
+        getWindow().setLayout((int) (width*0.6), (int) (height*0.5));
 
         Button update = findViewById(R.id.buttonUpdate);
         Button delete = findViewById(R.id.buttonDelete);

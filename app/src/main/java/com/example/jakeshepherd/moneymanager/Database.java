@@ -6,28 +6,72 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO need to get database working properly with date
  */
 public class Database extends SQLiteOpenHelper{
 
-    public static final String DATABASE_NAME = "Bills.db";
-    public static final String TABLE_NAME = "Bill_Table";
-    public static final String COL_1 = "BILL_NUMBER";
-    public static final String COL_2 = "NAME";
-    public static final String COL_3 = "AMOUNT";
-    public static final String COL_4 = "DUE_DATE";
+    private static final String DATABASE_NAME = "Bills.db";
+    private static final String TABLE_NAME = "Bill_Table";
+    private static final String COL_1 = "BILL_NUMBER";
+    private static final String COL_2 = "NAME";
+    private static final String COL_3 = "AMOUNT";
+    private static final String COL_4 = "DUE_DATE";
 
 
-    public Database(Context context) {
+    Database(Context context) {
         super(context, DATABASE_NAME, null, 1);
+    }
+
+    /**
+     * Getters for getting billName, billAmount, billDate.
+     * note: billID = 0 means the first bill (bill number 1) just like arrays.
+     */
+    public String getBillName(int billID){
+        List<String> list = new ArrayList<>();
+        Cursor res = getAllData();
+        if(res.moveToFirst()){
+            while(!res.isAfterLast()){
+                String name = res.getString(res.getColumnIndex("NAME"));
+                list.add(name);
+                res.moveToNext();
+            }
+        }
+        return list.get(billID);
+    }
+
+    public String getBillDate(int billID){
+        List<String> list = new ArrayList<>();
+        Cursor res = getAllData();
+        if(res.moveToFirst()){
+            while(!res.isAfterLast()){
+                String date = res.getString(res.getColumnIndex("DUE_DATE"));
+                list.add(date);
+                res.moveToNext();
+            }
+        }
+        return list.get(billID);
+    }
+
+    public String getBillAmount(int billID){
+        List<String> list = new ArrayList<>();
+        Cursor res = getAllData();
+        if(res.moveToFirst()){
+            while(!res.isAfterLast()){
+                String amount = res.getString(res.getColumnIndex("AMOUNT"));
+                list.add(amount);
+                res.moveToNext();
+            }
+        }
+        return list.get(billID);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("create table " + TABLE_NAME + "(BILL_NUMBER INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT INTEGER, DUE_DATE DATE)");
+        sqLiteDatabase.execSQL("create table " + TABLE_NAME + "(BILL_NUMBER INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT INTEGER, DUE_DATE TEXT)");
     }
 
     @Override
@@ -36,33 +80,60 @@ public class Database extends SQLiteOpenHelper{
         onCreate(sqLiteDatabase);
     }
 
-    public boolean insertData(String name, float amount){
+    /**
+     * Insert data into created database
+     * @param name
+     *      Name of person to be paid
+     * @param amount
+     *      Amount to be paid
+     * @param date
+     *      Date the payment is due
+     * @return
+     *      Return true if data inserted correctly
+     */
+    public boolean insertData(String name, float amount, String date){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_2, name);
         contentValues.put(COL_3, amount);
-        //contentValues.put(COL_4, String.valueOf(date));
+        contentValues.put(COL_4, date);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
-        if(result == -1){return false;}
-        else{return true;}
+        return result != -1;
     }
 
+    /**
+     * Collects all data from database
+     * @return
+     *      Return Cursor containing data from database
+     */
     public Cursor getAllData(){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT  * FROM " + TABLE_NAME;
-        Cursor res = db.rawQuery(query, null);
-        return res;
-
+        String query = "SELECT * FROM " + TABLE_NAME;
+        return db.rawQuery(query, null);
     }
 
-    public boolean updateData(String billNum, String name, float amount){
+
+    /**
+     * Update database, depending on bill ID
+     * @param billNum
+     *      Bill to be updated
+     * @param name
+     *      New name to update
+     * @param amount
+     *      New amount to update
+     * @param date
+     *      New date to update
+     * @return
+     *      Return true if data updated
+     */
+    public boolean updateData(String billNum, String name, float amount, String date){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1, billNum);
         contentValues.put(COL_2, name);
         contentValues.put(COL_3, amount);
-        //contentValues.put(COL_4, String.valueOf(date));
+        contentValues.put(COL_4, date);
         db.update(TABLE_NAME, contentValues, "BILL_NUMBER = ?", new String[] {billNum});
 
         return true;
@@ -71,10 +142,13 @@ public class Database extends SQLiteOpenHelper{
     /**
      * TODO on delete, bill number for previous bills do not decrease, they stay the same
      * @param id
-     * @return
+     *      Bill ID number to show which bill is to be deleted
+     * @return 1 or 0 depending on result of deletion
      */
     public Integer deleteRowData(String id){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_NAME, "BILL_NUMBER = ?", new String[] {id});
     }
+
+
 }
