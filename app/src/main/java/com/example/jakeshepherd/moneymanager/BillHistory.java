@@ -43,7 +43,8 @@ public class BillHistory extends AppCompatActivity {
         int listLength = billList.size();
         for (int i=0; i<listLength; i++) {
             Bill bill = billList.get(i);
-            billNames.add(bill.getPayeeName());
+            String billString = String.format("%s - £%s - %s", bill.getPayeeName(), bill.getAmount(), (bill.getDueDate().toString()).substring(0, 10));
+            billNames.add(billString);
         }
         return billNames;
     }
