@@ -23,6 +23,16 @@ public class ViewBills extends AppCompatActivity {
         db = new Database(this);
 
 
+
+
+
+    }
+
+    private void setupListView() {
+
+    }
+
+    private void tempStringBufferFunction() { // needed to get it out the way, kept confusing myself lol
         StringBuffer buffer = new StringBuffer();
         Cursor res = db.getAllData();
         while(res.moveToNext()) {
@@ -33,8 +43,9 @@ public class ViewBills extends AppCompatActivity {
             buffer.append("Due date: " + res.getString(3) + "\n");
             buffer.append("------------------------------\n\n");
         }
-        TextView scrollableText = findViewById(R.id.TextData);
-        scrollableText.setText(buffer.toString());
+
+//        TextView scrollableText = findViewById(R.id.TextData);
+//        scrollableText.setText(buffer.toString());
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -44,7 +55,5 @@ public class ViewBills extends AppCompatActivity {
                 startActivity(popup);
             }
         });
-
-
     }
 }

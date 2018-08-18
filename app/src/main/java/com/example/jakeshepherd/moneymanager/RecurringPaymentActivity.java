@@ -42,7 +42,6 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recurring_payment);
 
         this.billController = new BillController();
-
         db = new Database(this);
 
         setupNodes();

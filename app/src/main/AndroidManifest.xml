@@ -33,7 +33,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".DeleteOrUpdate" />
         <activity android:name=".DeleteData" />
-        <activity android:name=".UpdateData"></activity>
+        <activity android:name=".UpdateData" />
+        <activity android:name=".BillHistory"></activity>
     </application>
 
 </manifest>

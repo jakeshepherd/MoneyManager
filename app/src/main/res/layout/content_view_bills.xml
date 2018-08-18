@@ -8,11 +8,36 @@
     tools:context=".ViewBills"
     tools:showIn="@layout/activity_view_bills">
 
-    <TextView
-        android:id="@+id/TextData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/no_data_in_database" />
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:layout_margin="8dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="3"
+                    android:padding="8dp"
+                    android:text="Bill Name"
+                    android:textColor="#222"
+                    android:textStyle="bold"
+                    android:textSize="22sp"
+                    />
+            </RelativeLayout>
+
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v7.widget.CardView>
 
 </android.support.v4.widget.NestedScrollView>

@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 
+import java.util.Date;
+
 public class DatePickerActivity extends AppCompatActivity {
 
     CalendarView calView;
@@ -24,6 +26,7 @@ public class DatePickerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_date_picker);
 
+        dateToReturn = new Date().toString();
         setupCalendarView();
         setupSaveButton();
 

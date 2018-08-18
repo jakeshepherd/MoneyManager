@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         singlePayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent viewBills = new Intent(getBaseContext(), ViewBills.class);
+                Intent viewBills = new Intent(getBaseContext(), BillHistory.class);
                 startActivity(viewBills);
             }
         });
