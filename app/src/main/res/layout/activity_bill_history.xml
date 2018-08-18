@@ -6,6 +6,74 @@
     android:layout_height="match_parent"
     tools:context=".BillHistory">
 
+    <android.support.v7.widget.CardView
+        android:id="@+id/firstBillCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="2dp"
+        app:contentPadding="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Your Next Bill is:"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/firstAmountField"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/firstAmountField"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="£XX.XX"
+                android:textSize="42sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/firstPayeeNameField"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+            <TextView
+                android:id="@+id/firstPayeeNameField"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="To: PAYEE NAME"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@+id/firstDueDateField"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/firstAmountField" />
+
+            <TextView
+                android:id="@+id/firstDueDateField"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="On: XX/XX/XXXX"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/firstPayeeNameField" />
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+
     <ListView
         android:id="@+id/billListView"
         android:layout_width="0dp"
@@ -15,9 +83,39 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0.0sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/addBillButton" />
+
+    <TextView
+        android:id="@+id/upcomingBillLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Upcoming Expenses"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/addBillButton"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/firstBillCardView" />
+
+    <Button
+        android:id="@+id/addBillButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="34dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="+"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/firstBillCardView" />
 </android.support.constraint.ConstraintLayout>
