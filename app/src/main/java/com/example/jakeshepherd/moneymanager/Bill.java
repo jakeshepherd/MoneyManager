@@ -13,6 +13,7 @@ public class Bill {
     private float amount;
     private String payeeName;
     private Date dueDate;
+    private int billNumber;
 
     // Non-essential fields - need these?
     private Date setDate;
@@ -27,7 +28,27 @@ public class Bill {
         this.dueDate = dueDate;
         this.setDate = new Date();
 
-        this.emailsToSplitBy = new String[] {"jakeshepherd98@gmail.com"};
+        this.emailsToSplitBy = new String[] {"jakeshepherd98@gmail.com"}; // need to change
+    }
+
+    Bill(int number, String name, float amount, Date date) {
+        this.billNumber = number;
+        this.payeeName = name;
+        this.amount = amount;
+        this.dueDate = date;
+        this.setDate = new Date();
+
+        this.emailsToSplitBy = new String[] {"jakeshepherd98@gmail.com"}; // need to change
+    }
+
+    Bill(int number, String name, float amount, String date) {
+        this.billNumber = number;
+        this.payeeName = name;
+        this.amount = amount;
+        this.dueDate = new Date(); // need to change to actual date from string
+        this.setDate = new Date();
+
+        this.emailsToSplitBy = new String[] {"jakeshepherd98@gmail.com"}; // need to change
     }
 
     /**

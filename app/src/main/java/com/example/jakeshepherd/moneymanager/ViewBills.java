@@ -20,7 +20,7 @@ public class ViewBills extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        db = new Database(this);
+
 
 
 
