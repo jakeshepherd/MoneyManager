@@ -23,22 +23,25 @@
         android:id="@+id/AmountLabel"
         android:layout_width="wrap_content"
         android:layout_height="17dp"
+        android:layout_marginBottom="27dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="Amount"
+        app:layout_constraintBottom_toTopOf="@+id/DueDateLabel"
+        app:layout_constraintEnd_toStartOf="@+id/AmountField"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/RecPayTitle" />
 
     <EditText
         android:id="@+id/AmountField"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_width="69dp"
+        android:layout_height="44dp"
+        android:layout_marginBottom="16dp"
         android:ems="10"
         android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/DueDateLabel"
+        app:layout_constraintEnd_toStartOf="@+id/textView8"
         app:layout_constraintStart_toEndOf="@+id/AmountLabel"
         app:layout_constraintTop_toBottomOf="@+id/RecPayTitle" />
 
@@ -60,7 +63,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:text="payee_details"
+        android:text="Payee Details"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recurSwitch" />
@@ -112,14 +115,17 @@
         android:id="@+id/AddButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="53dp"
         android:layout_marginEnd="145dp"
         android:layout_marginLeft="145dp"
         android:layout_marginRight="145dp"
         android:layout_marginStart="145dp"
+        android:layout_marginTop="123dp"
         android:text="Add payment"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="410dp" />
+        app:layout_constraintTop_toBottomOf="@+id/PayeeNameField" />
 
     <TextView
         android:id="@+id/ChosenDateLabel"
@@ -141,5 +147,76 @@
         android:text="change"
         app:layout_constraintStart_toEndOf="@+id/ChosenDateLabel"
         app:layout_constraintTop_toBottomOf="@+id/AmountField" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="9dp"
+        android:layout_marginTop="16dp"
+        android:text="Split between"
+        app:layout_constraintBottom_toTopOf="@+id/ChangeDateButton"
+        app:layout_constraintStart_toEndOf="@+id/AmountField"
+        app:layout_constraintTop_toBottomOf="@+id/RecPayTitle" />
+
+    <EditText
+        android:id="@+id/editSplitNum"
+        android:layout_width="36dp"
+        android:layout_height="47dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginEnd="128dp"
+        android:layout_marginRight="128dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/ChangeDateButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/RecPayTitle"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="148dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="16dp"
+        android:text="people"
+        app:layout_constraintBottom_toTopOf="@+id/PayeeNameField"
+        app:layout_constraintStart_toEndOf="@+id/editSplitNum"
+        app:layout_constraintTop_toBottomOf="@+id/RecPayTitle" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="169dp"
+        android:layout_marginEnd="294dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="294dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="38dp"
+        android:text="Description:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/PayeeNameField" />
+
+    <EditText
+        android:id="@+id/editDescription"
+        android:layout_width="264dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="55dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="21dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/AddButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView11"
+        app:layout_constraintTop_toBottomOf="@+id/PayeeNameField" />
 
 </android.support.constraint.ConstraintLayout>

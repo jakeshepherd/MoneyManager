@@ -32,6 +32,8 @@ public class RecurringPaymentActivity extends AppCompatActivity {
     private Button changeDateButton;
     private Switch recurSwitch;
     private EditText payeeNameField;
+    private EditText editDescription;
+    private EditText editNumSplit;
 
     private BillController billController;
     private String dueDateToSetBill;
@@ -54,6 +56,8 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         this.changeDateButton = findViewById(R.id.ChangeDateButton);
         this.recurSwitch = findViewById(R.id.recurSwitch);
         this.payeeNameField = findViewById(R.id.PayeeNameField);
+        this.editDescription = findViewById(R.id.editDescription);
+        this.editNumSplit = findViewById(R.id.editSplitNum);
 
         addButtonListeners();
     }
@@ -80,6 +84,8 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                 float amount = Float.parseFloat(amountField.getText().toString());
                 String name = payeeNameField.getText().toString();
                 Date dueDate = null;
+                String description = editDescription.getText().toString();
+                int billSplitNum = Integer.parseInt(editNumSplit.getText().toString());
 
                 try {
                     dueDate = (new SimpleDateFormat("dd/MM/yyyy", Locale.UK)).parse(dueDateToSetBill);
@@ -87,16 +93,13 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                if (amount != 0 && !name.equals("") && dueDate != null) {
+                if (amount != 0 && !name.equals("") && dueDate != null && billSplitNum != 0 && !description.equals("")) {
                     Bill newBill = new Bill(amount, name, dueDate);
 
                     System.out.println("Due: " + dueDate.toString());
-                    db.insertData(name, amount, String.valueOf(dueDate));
+                    db.insertData(name, amount, String.valueOf(dueDate), billSplitNum, description);
 
                     billController.addBill(newBill);
-                    /**
-                     * best to comment below out when developing
-                     */
                     if (checkIfUserWantsToEmail()) {
                         notifyPeople(newBill);
                     }
@@ -109,8 +112,10 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                     boolean amountIsNull = (amount == 0);
                     boolean dateIsNull = (dueDate == null);
                     boolean nameIsNull = (name.equals(""));
+                    boolean billSplitNumIsNull = (billSplitNum == 0);
+                    boolean descriptionIsNull = (description.equals(""));
 
-                    String snackText = String.format("Please fill in all details", amountIsNull, dateIsNull, nameIsNull);
+                    String snackText = String.format("Please fill in all details", amountIsNull, dateIsNull, nameIsNull, billSplitNumIsNull, descriptionIsNull);
                     Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
             }

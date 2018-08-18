@@ -20,11 +20,26 @@ public class Database extends SQLiteOpenHelper{
     private static final String COL_2 = "NAME";
     private static final String COL_3 = "AMOUNT";
     private static final String COL_4 = "DUE_DATE";
+    private static final String COL_5 = "SPLIT_NUMBER";
+    private static final String COL_6 = "DESCRIPTION";
 
 
     Database(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
+
+    @Override
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        sqLiteDatabase.execSQL("create table " + TABLE_NAME + "(BILL_NUMBER INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT INTEGER, " +
+                "DUE_DATE TEXT, SPLIT_NUMBER INTEGER, DESCRIPTION TEXT)");
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        onCreate(sqLiteDatabase);
+    }
+
 
     /**
      * Getters for getting billName, billAmount, billDate.
@@ -69,16 +84,33 @@ public class Database extends SQLiteOpenHelper{
         return list.get(billID);
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("create table " + TABLE_NAME + "(BILL_NUMBER INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT INTEGER, DUE_DATE TEXT)");
+    public String getSplitNum(int billID){
+        List<String> list = new ArrayList<>();
+        Cursor res = getAllData();
+        if(res.moveToFirst()){
+            while(!res.isAfterLast()){
+                String amount = res.getString(res.getColumnIndex("SPLIT_NUMBER"));
+                list.add(amount);
+                res.moveToNext();
+            }
+        }
+        return list.get(billID);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(sqLiteDatabase);
+    public String getDescription(int billID){
+        List<String> list = new ArrayList<>();
+        Cursor res = getAllData();
+        if(res.moveToFirst()){
+            while(!res.isAfterLast()){
+                String amount = res.getString(res.getColumnIndex("DESCRIPTION"));
+                list.add(amount);
+                res.moveToNext();
+            }
+        }
+        return list.get(billID);
     }
+
+
 
     /**
      * Insert data into created database
@@ -91,12 +123,14 @@ public class Database extends SQLiteOpenHelper{
      * @return
      *      Return true if data inserted correctly
      */
-    public boolean insertData(String name, float amount, String date){
+    public boolean insertData(String name, float amount, String date, int splitNum, String description){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_2, name);
         contentValues.put(COL_3, amount);
         contentValues.put(COL_4, date);
+        contentValues.put(COL_5, splitNum);
+        contentValues.put(COL_6, description);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
         return result != -1;
@@ -127,13 +161,15 @@ public class Database extends SQLiteOpenHelper{
      * @return
      *      Return true if data updated
      */
-    public boolean updateData(String billNum, String name, float amount, String date){
+    public boolean updateData(String billNum, String name, float amount, String date, int splitNum, String description){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1, billNum);
         contentValues.put(COL_2, name);
         contentValues.put(COL_3, amount);
         contentValues.put(COL_4, date);
+        contentValues.put(COL_5, splitNum);
+        contentValues.put(COL_6, description);
         db.update(TABLE_NAME, contentValues, "BILL_NUMBER = ?", new String[] {billNum});
 
         return true;

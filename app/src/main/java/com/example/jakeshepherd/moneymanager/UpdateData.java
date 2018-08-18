@@ -52,10 +52,14 @@ public class UpdateData extends AppCompatActivity {
                 EditText billNum = findViewById(R.id.editBillNum);
                 EditText name = findViewById(R.id.editNewName);
                 EditText amount = findViewById(R.id.editNewAmount);
+                EditText splitNum = findViewById(R.id.editSplitNum);
+                EditText description = findViewById(R.id.editSplitNum);
 
                 String billNumString = billNum.getText().toString();
                 String nameString = name.getText().toString();
                 float amountFloat = Float.parseFloat(amount.getText().toString());
+                int splitNumInt = Integer.parseInt(splitNum.getText().toString());
+                String descriptionString = description.getText().toString();
 
                 try {
                     dueDate = (new SimpleDateFormat("dd/MM/yyyy", Locale.UK)).parse(dueDateToSetBill);
@@ -70,11 +74,17 @@ public class UpdateData extends AppCompatActivity {
                 if(nameString.equals("")){
                     name.setError("Enter a name");
                 }
+                if(splitNumInt == 0){
+                    splitNum.setError("Enter a number");
+                }
+                if(descriptionString.equals("")){
+                    description.setError("Add a description");
+                }
 
-                if((billNumString.equals("")) || (nameString.equals(""))){
+                if((billNumString.equals("")) || (nameString.equals("")) || splitNumInt == 0 || descriptionString.equals("")){
                     showMessage("Please fill in all details");
                 }else{
-                    boolean updated = db.updateData(billNumString, nameString, amountFloat, String.valueOf(dueDate));
+                    boolean updated = db.updateData(billNumString, nameString, amountFloat, String.valueOf(dueDate), splitNumInt, descriptionString);
                     if(updated){
                         System.out.println("Bill data added");
                     }else{
