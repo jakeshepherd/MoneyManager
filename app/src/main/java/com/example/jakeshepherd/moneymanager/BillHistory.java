@@ -1,11 +1,15 @@
 package com.example.jakeshepherd.moneymanager;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,21 +31,53 @@ public class BillHistory extends AppCompatActivity {
 
         ArrayList<Bill> billList = getBillList();
 
-        Bill firstBill = billList.remove(0);
+        if (billList.size() > 0) {
+            continueSetup(billList);
+        } else {
+            // give a better alert to user, i.e. popup or something -- "You have no outstanding bills! Add one before viewing!"
+            // Can you Snackbar with buttons???
+            String snackText = String.format("You need to add a bill before you can view them!");
+            Snackbar.make(root, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
+    }
 
+    private void continueSetup(ArrayList<Bill> list) {
+        setupNewBillButton();
+        Bill firstBill = list.remove(0);
+
+        setupFirstBillCard(firstBill);
+        setupBillList(list);
+    }
+
+    private void setupNewBillButton() {
+        Button addButton = findViewById(R.id.addBillButton);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent recurPaymentIntent = new Intent(getBaseContext(), RecurringPaymentActivity.class);
+                startActivity(recurPaymentIntent);
+            }
+        });
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void setupFirstBillCard(Bill bill) {
         TextView firstBillAmount = findViewById(R.id.firstAmountField);
-        firstBillAmount.setText(String.format("£%.2f", firstBill.getAmount()));
+        firstBillAmount.setText(String.format("£%.2f", bill.getAmount()));
 
         TextView firstBillPayee = findViewById(R.id.firstPayeeNameField);
-        firstBillPayee.setText(String.format("To: %s", firstBill.getPayeeName()));
+        firstBillPayee.setText(String.format("To: %s", bill.getPayeeName()));
 
         TextView firstBillDate = findViewById(R.id.firstDueDateField);
-        firstBillDate.setText(String.format("On: %s", firstBill.getDueDate().toString().substring(0, 10)));
+        firstBillDate.setText(String.format("On: %s", bill.getDueDate().toString().substring(0, 10)));
+    }
 
-        ListAdapter billListAdapter = new BillListAdapter(this, billList);
+    private void setupBillList(ArrayList<Bill> bills) {
+        ListAdapter billListAdapter = new BillListAdapter(this, bills);
         ListView billListView = findViewById(R.id.billListView);
         billListView.setAdapter(billListAdapter);
     }
+
 
     private ArrayList<Bill> getBillList() {
         Database db = new Database(this);
