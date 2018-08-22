@@ -2,9 +2,17 @@ package com.example.jakeshepherd.moneymanager;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.os.SystemClock;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,10 +27,13 @@ import java.lang.annotation.Documented;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 public class RecurringPaymentActivity extends AppCompatActivity {
+    private final String CHANNEL_ID = "personal_notifications";
+    private final int NOTIFICATION_ID = 001;
 
     Database db;
 
@@ -78,6 +89,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
      */
     private void addPaymentButtonListener() {
         this.addPaymentButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
 
@@ -108,6 +120,11 @@ public class RecurringPaymentActivity extends AppCompatActivity {
 
                     String snackText = String.format("New recurring payment of £%s is due on %s. Payable to %s.", amount, dueDate.toString(), name);
                     Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+                    displayNotification(view, name, amount, String.valueOf(dueDate), billSplitNum, description);
+
+                    Intent homeScreen = new Intent(getBaseContext(), MainActivity.class);
+                    startActivity(homeScreen);
                 } else {
                     boolean amountIsNull = (amount == 0);
                     boolean dateIsNull = (dueDate == null);
@@ -174,6 +191,17 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(RecurringPaymentActivity.this, "There has been an error. Cannot send an email at this time.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void displayNotification(View view, String name, float amount, String date, int billSplitNum, String description){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+        builder.setSmallIcon(R.drawable.ic_attach_money);
+        builder.setContentTitle("You have an upcoming bill");
+        builder.setContentText("You owe " + name + " £" + amount + " split between " + billSplitNum + " people on the " + date);
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+        notificationManagerCompat.notify(NOTIFICATION_ID, builder.build());
     }
 
 

@@ -34,7 +34,8 @@
         <activity android:name=".DeleteOrUpdate" />
         <activity android:name=".DeleteData" />
         <activity android:name=".UpdateData" />
-        <activity android:name=".BillHistory"></activity>
+        <activity android:name=".BillHistory" />
+        <activity android:name=".NotificationActivity"></activity>
     </application>
 
 </manifest>
