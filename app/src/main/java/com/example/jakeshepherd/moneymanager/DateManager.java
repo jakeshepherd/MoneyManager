@@ -17,7 +17,8 @@ public class DateManager {
      * @throws ParseException : when the String is in the incorrect format
      */
     Date getDateFromString(String dateString) throws ParseException {
-        boolean isCorrectFormat = checkDateStringFormat(dateString);
+//        boolean isCorrectFormat = checkDateStringFormat(dateString);
+        boolean isCorrectFormat = true;
         if (isCorrectFormat) {
             DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH); // 18/08/2018
             Date date = format.parse(dateString);

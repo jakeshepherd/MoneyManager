@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         String s = d.toString();
 
         try {
-            System.out.println(String.format("\n\n\n%s\n%s\n\n\n", s, dm.getDateFromString("Fri Aug 17 00:00:00 GMT+01:00 2018").toString()));
+            System.out.println(String.format("\n\n\n%s\n%s\n\n\n", s, dm.getDateFromString("Fri Aug 23 00:00:00 GMT+01:00 2018").toString()));
         } catch (ParseException e) {
             System.out.println(String.format("\n\n\nCOULD NOT PARSE DATE!\n%s\n\n\n", s));
         }
