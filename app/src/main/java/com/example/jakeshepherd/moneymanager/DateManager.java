@@ -17,11 +17,48 @@ public class DateManager {
      * @throws ParseException : when the String is in the incorrect format
      */
     Date getDateFromString(String dateString) throws ParseException {
-        DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH); // 18/08/2018
-        Date date = format.parse(dateString);
-        System.out.println(date);
+        boolean isCorrectFormat = checkDateStringFormat(dateString);
+        if (isCorrectFormat) {
+            DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH); // 18/08/2018
+            Date date = format.parse(dateString);
+            System.out.println(date);
 
-        return date;
+            return date;
+        } else {
+            return new Date(); //  default to current date
+        }
+    }
+
+    boolean checkDateStringFormat(String dateString) {
+        if (dateString.length() > 6 && dateString.length() < 9) { return false;} // 7 or 8
+
+        String[] dateComponents = getDateComponenetsFromString(dateString); // [dd, MM, yyyy]
+
+        boolean hasNumericDay = checkIfNumber(dateComponents[0]); // day
+        boolean hasNumericMonth = checkIfNumber(dateComponents[0]); // day
+        boolean hasNumericYear = checkIfNumber(dateComponents[0]); // day
+
+        if (hasNumericDay && hasNumericMonth && hasNumericYear) {
+            return true;
+        }
+        return false;
+    }
+
+    String[] getDateComponenetsFromString(String dateString) {
+        dateString = dateString.replace("/", ""); // remove / i.e ddMMyyyy
+        String day = dateString.substring(0, 2);
+        String month = dateString.substring(3, 4);
+        String year = dateString.substring(5, 8);
+        return new String[] {day, month, year};
+    }
+
+    boolean checkIfNumber(String toCheck) {
+        try {
+            int i = Integer.parseInt(toCheck);
+            return true;
+        } catch (NumberFormatException nfe) { // could not parse therefore not a valid date number
+            return false;
+        }
     }
 
     /**
