@@ -1,18 +1,14 @@
 package com.example.jakeshepherd.moneymanager;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
-import android.os.SystemClock;
-import android.support.annotation.RequiresApi;
+
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -22,18 +18,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.Console;
-import java.lang.annotation.Documented;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 public class RecurringPaymentActivity extends AppCompatActivity {
-    private final String CHANNEL_ID = "personal_notifications";
-    private final int NOTIFICATION_ID = 001;
+
 
     Database db;
 
@@ -56,6 +47,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
 
         this.billController = new BillController();
         db = new Database(this);
+       //notificationActivity = new NotificationActivity();
 
         setupNodes();
     }
@@ -84,12 +76,11 @@ public class RecurringPaymentActivity extends AppCompatActivity {
      * Bill object is then added to the list stored in BillController.
      *
      * TODO
-     * > Need to add some form of offline storage for bills
-     * > and a function to load in stored data into BillController()
+     * > Need to add some form of offline storage for bills -- hasnt this been done in the database?
+     * > and a function to load in stored data into BillController() -- this has been done too right?
      */
     private void addPaymentButtonListener() {
         this.addPaymentButton.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
 
@@ -121,7 +112,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                     String snackText = String.format("New recurring payment of £%s is due on %s. Payable to %s.", amount, dueDate.toString(), name);
                     Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
-                    displayNotification(view, name, amount, String.valueOf(dueDate), billSplitNum, description);
+                    setAlarm(view, dueDate);
 
                     Intent homeScreen = new Intent(getBaseContext(), MainActivity.class);
                     startActivity(homeScreen);
@@ -193,16 +184,57 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         }
     }
 
-    public void displayNotification(View view, String name, float amount, String date, int billSplitNum, String description){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-        builder.setSmallIcon(R.drawable.ic_attach_money);
-        builder.setContentTitle("You have an upcoming bill");
-        builder.setContentText("You owe " + name + " £" + amount + " split between " + billSplitNum + " people on the " + date);
-        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-        notificationManagerCompat.notify(NOTIFICATION_ID, builder.build());
+    /**
+     * setAlarm sends off an alarm at a given time that is received by AlertReceiver and will then show a notification.
+     */
+    public void setAlarm(View view, Date endDate){
+        /**
+         * TODO get it to send the alert on the actual date that has been set.
+         * also, need the notification to say bill info maybe?
+         * This currently sends an alert to the user five seconds after the payment has been recorded (because thats
+         * the difference between the start and end date)
+         */
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+        long difference = 0;
+        try {
+            Date startDate = simpleDateFormat.parse("23/08/2018 20:36:00");
+            Date simpleEndDate = simpleDateFormat.parse("23/08/2018 20:35:55");
+            difference = simpleEndDate.getTime() - startDate.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long alertTime = difference;
+
+        Intent alertIntent = new Intent(this, AlertReceiver.class);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, alertTime, PendingIntent.getBroadcast(this, 1,
+                alertIntent, PendingIntent.FLAG_UPDATE_CURRENT));
     }
+
+
+
+//    /**
+//     * cant get the date difference to work with your messed up date picker thing @willtaylor. ;)
+//     * @param endDate
+//     */
+//    public void dateDifference(Date endDate){
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+//
+//        try {
+//            Date startDate = simpleDateFormat.parse("23/08/2018 20:36:00");
+//            Date simpleEndDate = simpleDateFormat.parse("23/08/2018 20:35:55");
+//            difference = simpleEndDate.getTime() - startDate.getTime();
+//            return difference;
+//
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
 
 
 }

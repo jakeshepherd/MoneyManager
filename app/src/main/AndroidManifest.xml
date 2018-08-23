@@ -1,41 +1,50 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.jakeshepherd.moneymanager">
+<?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android"
+package="com.example.jakeshepherd.moneymanager">
 
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+<uses-permission android:name="com.android.alarm.perimission.SET_ALARM" />
+
+
+<application
+    android:allowBackup="true"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:roundIcon="@mipmap/ic_launcher_round"
+    android:supportsRtl="true"
+    android:theme="@style/AppTheme">
+    <activity android:name=".MainActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <activity android:name=".RecurringPaymentActivity" />
+    <activity
+        android:name=".DatePickerActivity"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        android:theme="@style/AppTheme.PopUpTheme">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".RecurringPaymentActivity" />
-        <activity
-            android:name=".DatePickerActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.PopUpTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".ViewBills"
+        android:label="@string/title_activity_view_bills"
+        android:theme="@style/AppTheme.NoActionBar" />
+    <activity android:name=".DeleteOrUpdate" />
+    <activity android:name=".DeleteData" />
+    <activity android:name=".UpdateData" />
+    <activity android:name=".BillHistory" />
+    <activity android:name=".NotificationActivity"></activity>
+    <receiver android:name=".AlertReceiver" >
+        <intent-filter>
+            <action android:name="NOTIFICATION_SERVICE" />
+        </intent-filter>
+    </receiver>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ViewBills"
-            android:label="@string/title_activity_view_bills"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".DeleteOrUpdate" />
-        <activity android:name=".DeleteData" />
-        <activity android:name=".UpdateData" />
-        <activity android:name=".BillHistory" />
-        <activity android:name=".NotificationActivity"></activity>
-    </application>
+
+</application>
 
 </manifest>
