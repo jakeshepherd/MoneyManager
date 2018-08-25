@@ -2,13 +2,18 @@ package com.example.jakeshepherd.moneymanager;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import android.os.Build;
 import android.support.design.widget.Snackbar;
 
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,9 +26,11 @@ import android.widget.Toast;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class RecurringPaymentActivity extends AppCompatActivity {
+
 
 
     Database db;
@@ -39,6 +46,8 @@ public class RecurringPaymentActivity extends AppCompatActivity {
 
     private BillController billController;
     private String dueDateToSetBill;
+    NotificationCompat.Builder mBuilder;
+    private static String CHANNEL_ID = "default";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +56,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
 
         this.billController = new BillController();
         db = new Database(this);
-       //notificationActivity = new NotificationActivity();
-
+        createNotificationChannel();
         setupNodes();
     }
 
@@ -75,7 +83,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
      * Takes the user-inputted values and creates a new instance of Bill() with those values. The new
      * Bill object is then added to the list stored in BillController.
      *
-     * TODO
+     * TODO - also make this entire method look nicer i think
      * > Need to add some form of offline storage for bills -- hasnt this been done in the database?
      * > and a function to load in stored data into BillController() -- this has been done too right?
      */
@@ -192,21 +200,22 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         /**
          * TODO get it to send the alert on the actual date that has been set.
          * also, need the notification to say bill info maybe?
-         * This currently sends an alert to the user five seconds after the payment has been recorded (because thats
-         * the difference between the start and end date)
          */
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
-        long difference = 0;
-        try {
-            Date startDate = simpleDateFormat.parse("23/08/2018 20:36:00");
-            Date simpleEndDate = simpleDateFormat.parse("23/08/2018 20:35:55");
-            difference = simpleEndDate.getTime() - startDate.getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        long alertTime = difference;
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+//        long difference = 0;
+//        try {
+//            Date startDate = simpleDateFormat.parse("23/08/2018 20:36:00");
+//            Date simpleEndDate = simpleDateFormat.parse("23/08/2018 20:35:55");
+//            difference = simpleEndDate.getTime() - startDate.getTime();
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
 
+        // use difference for notifications to be sent on the right day.
+        long alertTime = new GregorianCalendar().getTimeInMillis()+1000;
+
+        // alarm service that calls AlertReceiver after a given time (in millis)
         Intent alertIntent = new Intent(this, AlertReceiver.class);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
@@ -215,24 +224,21 @@ public class RecurringPaymentActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Creates a channel for notifications to be sent through
+     */
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "default";
+            String description = "default";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
-//    /**
-//     * cant get the date difference to work with your messed up date picker thing @willtaylor. ;)
-//     * @param endDate
-//     */
-//    public void dateDifference(Date endDate){
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
-//
-//        try {
-//            Date startDate = simpleDateFormat.parse("23/08/2018 20:36:00");
-//            Date simpleEndDate = simpleDateFormat.parse("23/08/2018 20:35:55");
-//            difference = simpleEndDate.getTime() - startDate.getTime();
-//            return difference;
-//
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 
 

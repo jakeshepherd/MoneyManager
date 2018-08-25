@@ -16,6 +16,9 @@ import android.widget.CalendarView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * TODO sort this date shit will ;)
+ */
 public class DatePickerActivity extends AppCompatActivity {
 
     CalendarView calView;
