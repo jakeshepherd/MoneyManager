@@ -37,7 +37,7 @@ package="com.example.jakeshepherd.moneymanager">
     <activity android:name=".DeleteData" />
     <activity android:name=".UpdateData" />
     <activity android:name=".BillHistory" />
-    <activity android:name=".NotificationActivity"></activity>
+
     <receiver android:name=".AlertReceiver" >
         <intent-filter>
             <action android:name="NOTIFICATION_SERVICE" />

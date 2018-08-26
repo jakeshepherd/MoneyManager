@@ -23,17 +23,24 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import static android.provider.Settings.System.DATE_FORMAT;
 
 public class RecurringPaymentActivity extends AppCompatActivity {
 
 
 
     Database db;
+    Date data;
 
     private Button addPaymentButton;
     private EditText amountField;
@@ -43,6 +50,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
     private EditText payeeNameField;
     private EditText editDescription;
     private EditText editNumSplit;
+    private String dueDateTESTING;
 
     private BillController billController;
     private String dueDateToSetBill;
@@ -99,6 +107,9 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                 int billSplitNum = Integer.parseInt(editNumSplit.getText().toString());
 
                 try {
+                    /**
+                     * this should convert the string dueDate to a nice formatted Date dueDate...
+                     */
                     dueDate = (new SimpleDateFormat("dd/MM/yyyy", Locale.UK)).parse(dueDateToSetBill);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -120,10 +131,10 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                     String snackText = String.format("New recurring payment of £%s is due on %s. Payable to %s.", amount, dueDate.toString(), name);
                     Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
-                    setAlarm(view, dueDate);
+                    setAlarm(view, name, amount, dueDateToSetBill, billSplitNum, description);
 
                     Intent homeScreen = new Intent(getBaseContext(), MainActivity.class);
-                    startActivity(homeScreen);
+                    //startActivity(homeScreen);
                 } else {
                     boolean amountIsNull = (amount == 0);
                     boolean dateIsNull = (dueDate == null);
@@ -161,6 +172,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     // TODO Extract the data returned from the child Activity.
                     this.dueDateToSetBill = data.getStringExtra("date");
+                    this.dueDateTESTING = data.getStringExtra("dateString");
                     this.dueDateLabel.setText(this.dueDateToSetBill);
                 }
                 break;
@@ -196,29 +208,48 @@ public class RecurringPaymentActivity extends AppCompatActivity {
     /**
      * setAlarm sends off an alarm at a given time that is received by AlertReceiver and will then show a notification.
      */
-    public void setAlarm(View view, Date endDate){
+    public void setAlarm(View view, String name, float amount, String endDate, int billSplitNum, String description){
         /**
          * TODO get it to send the alert on the actual date that has been set.
          * also, need the notification to say bill info maybe?
          */
 
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
-//        long difference = 0;
-//        try {
-//            Date startDate = simpleDateFormat.parse("23/08/2018 20:36:00");
-//            Date simpleEndDate = simpleDateFormat.parse("23/08/2018 20:35:55");
-//            difference = simpleEndDate.getTime() - startDate.getTime();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
 
-        // use difference for notifications to be sent on the right day.
-        long alertTime = new GregorianCalendar().getTimeInMillis()+1000;
+        String[] individualComponents = endDate.split("/");
+        int day = Integer.parseInt(individualComponents[0]);
+        int month = Integer.parseInt(individualComponents[1]);
+        int year = Integer.parseInt(individualComponents[2]);
 
         // alarm service that calls AlertReceiver after a given time (in millis)
         Intent alertIntent = new Intent(this, AlertReceiver.class);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alertIntent.putExtra("billName", name);
+        alertIntent.putExtra("billAmount", amount);
+        alertIntent.putExtra("billDate", endDate);
+        alertIntent.putExtra("billSplitNum", billSplitNum);
+        alertIntent.putExtra("billDescription", description);
 
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 0, alertIntent, 0);
+
+        /**
+         * set calendar to the date that user has entered as bill due date
+         */
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.YEAR, year);
+
+        /**
+         * uncomment for to set a timer on the actual date
+         */
+
+//        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+//                AlarmManager.INTERVAL_DAY, pendingIntent);
+
+
+        // use difference for notifications to be sent on the right day.
+        long alertTime = new GregorianCalendar().getTimeInMillis()+1000;
         alarmManager.set(AlarmManager.RTC_WAKEUP, alertTime, PendingIntent.getBroadcast(this, 1,
                 alertIntent, PendingIntent.FLAG_UPDATE_CURRENT));
     }

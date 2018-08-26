@@ -14,16 +14,16 @@ import android.widget.Button;
 import android.widget.CalendarView;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
-/**
- * TODO sort this date shit will ;)
- */
 public class DatePickerActivity extends AppCompatActivity {
 
     CalendarView calView;
     String dateToReturn;
     Button saveDateButton;
+    String date;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class DatePickerActivity extends AppCompatActivity {
         this.calView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
-                String date = (i2 + "/" + (i1+1) + "/" + i);
+                date = (i2 + "/" + (i1+1) + "/" + i);
 
                 dateToReturn = date;
 
@@ -75,6 +75,7 @@ public class DatePickerActivity extends AppCompatActivity {
     private void returnResult() {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("date", dateToReturn);
+        resultIntent.putExtra("dateString", date);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
