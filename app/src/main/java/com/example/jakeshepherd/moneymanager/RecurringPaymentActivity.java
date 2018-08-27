@@ -13,32 +13,25 @@ import android.os.Build;
 import android.support.design.widget.Snackbar;
 
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import static android.provider.Settings.System.DATE_FORMAT;
-
 public class RecurringPaymentActivity extends AppCompatActivity {
-
-
-
     Database db;
     Date data;
 
@@ -50,12 +43,12 @@ public class RecurringPaymentActivity extends AppCompatActivity {
     private EditText payeeNameField;
     private EditText editDescription;
     private EditText editNumSplit;
-    private String dueDateTESTING;
 
     private BillController billController;
     private String dueDateToSetBill;
     NotificationCompat.Builder mBuilder;
     private static String CHANNEL_ID = "default";
+    public boolean recurring = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +70,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         this.payeeNameField = findViewById(R.id.PayeeNameField);
         this.editDescription = findViewById(R.id.editDescription);
         this.editNumSplit = findViewById(R.id.editSplitNum);
+        this.recurSwitch = findViewById(R.id.recurSwitch);
 
         addButtonListeners();
     }
@@ -99,7 +93,6 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         this.addPaymentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 float amount = Float.parseFloat(amountField.getText().toString());
                 String name = payeeNameField.getText().toString();
                 Date dueDate = null;
@@ -127,9 +120,6 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                     }
 
                     billController.getBillsDueToday();
-
-                    String snackText = String.format("New recurring payment of £%s is due on %s. Payable to %s.", amount, dueDate.toString(), name);
-                    Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
                     setAlarm(view, name, amount, dueDateToSetBill, billSplitNum, description);
 
@@ -172,7 +162,6 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     // TODO Extract the data returned from the child Activity.
                     this.dueDateToSetBill = data.getStringExtra("date");
-                    this.dueDateTESTING = data.getStringExtra("dateString");
                     this.dueDateLabel.setText(this.dueDateToSetBill);
                 }
                 break;
@@ -207,20 +196,14 @@ public class RecurringPaymentActivity extends AppCompatActivity {
 
     /**
      * setAlarm sends off an alarm at a given time that is received by AlertReceiver and will then show a notification.
+     * TODO get it to send the alert on the actual date that has been set.
      */
     public void setAlarm(View view, String name, float amount, String endDate, int billSplitNum, String description){
-        /**
-         * TODO get it to send the alert on the actual date that has been set.
-         * also, need the notification to say bill info maybe?
-         */
-
-
         String[] individualComponents = endDate.split("/");
         int day = Integer.parseInt(individualComponents[0]);
         int month = Integer.parseInt(individualComponents[1]);
         int year = Integer.parseInt(individualComponents[2]);
 
-        // alarm service that calls AlertReceiver after a given time (in millis)
         Intent alertIntent = new Intent(this, AlertReceiver.class);
         alertIntent.putExtra("billName", name);
         alertIntent.putExtra("billAmount", amount);
@@ -237,31 +220,50 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.DAY_OF_MONTH, day);
-        calendar.set(Calendar.MONTH, month);
+
+        // i think months work like arrays in the calender, ie jan = 0
+        calendar.set(Calendar.MONTH, month-1);
         calendar.set(Calendar.YEAR, year);
 
         /**
-         * uncomment for to set a timer on the actual date
+         * doesnt work with time -- not even sure if it works with the date etc properly yet...
          */
+        calendar.set(Calendar.HOUR_OF_DAY, 13);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
 
-//        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-//                AlarmManager.INTERVAL_DAY, pendingIntent);
+        /**
+         * checks if the switch is on, if so it sets a recurring payment,
+         * else set a one time alarm
+         */
+        if(recurSwitch.isChecked()){
+            /**
+             * sends alarm on the day in the calender, then repeats that every month
+             */
+            String snackText = String.format("New recurring payment of £%s is due on %s. Payable to %s.", amount, endDate, name);
+            Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
-
-        // use difference for notifications to be sent on the right day.
-        long alertTime = new GregorianCalendar().getTimeInMillis()+1000;
-        alarmManager.set(AlarmManager.RTC_WAKEUP, alertTime, PendingIntent.getBroadcast(this, 1,
-                alertIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+            // this should set the alarm to repeat once every month
+            //TODO -- give the user an option to decide how big the interval is
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY*(Calendar.DAY_OF_MONTH), pendingIntent);
+        }else{
+            /**
+             * below can be un-commented to send a notifications as soon as payment is added
+             */
+            long alertTime = new GregorianCalendar().getTimeInMillis()+1000;
+            alarmManager.set(AlarmManager.RTC_WAKEUP, alertTime, PendingIntent.getBroadcast(this, 1,
+                    alertIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+        }
     }
-
 
     /**
      * Creates a channel for notifications to be sent through
+     * TODO -- get a new channel to be created every time a new payment is added, this way I think multiple notifications can be sent?
      */
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "default";
-            String description = "default";
+            CharSequence name = "Money Manager Notification";
+            String description = "Channel to send notifications from Money Manager";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
@@ -269,9 +271,4 @@ public class RecurringPaymentActivity extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
     }
-
-
-
-
-
 }

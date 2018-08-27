@@ -10,6 +10,8 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static android.app.Notification.DEFAULT_LIGHTS;
 import static android.app.Notification.DEFAULT_SOUND;
 import static android.app.Notification.DEFAULT_VIBRATE;
@@ -19,7 +21,7 @@ import static android.app.Notification.DEFAULT_VIBRATE;
  * Could potentially use a timestamp for notification ID
  */
 public class AlertReceiver extends BroadcastReceiver{
-    private int notificationId = 1;
+    private final static AtomicInteger c = new AtomicInteger(0);
     private static String CHANNEL_ID = "default";
 
 
@@ -38,6 +40,10 @@ public class AlertReceiver extends BroadcastReceiver{
                     " split between " + billSplitNum + " people.");
     }
 
+    public static int getID() {
+        return c.incrementAndGet();
+    }
+
     public void createNotification(Context context, String title, String text){
         PendingIntent notificIntent = PendingIntent.getActivity(context, 0, new Intent(context, BillHistory.class), 0);
         NotificationCompat.Builder mbuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -47,16 +53,15 @@ public class AlertReceiver extends BroadcastReceiver{
 
         mbuilder.setContentIntent(notificIntent);
 
-        //TODO - get the LED to blink correctly
+        //TODO -- get the LED to blink correctly
         mbuilder.setLights(Color.RED,3000,3000);
-        
         mbuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
         mbuilder.setDefaults(NotificationCompat.DEFAULT_LIGHTS);
         mbuilder.setAutoCancel(true);
+        mbuilder.setColor(Color.parseColor("#FF8C00"));
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(notificationId, mbuilder.build());
+        notificationManager.notify(getID(), mbuilder.build());
     }
 
 }

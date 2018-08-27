@@ -22,7 +22,6 @@ public class DatePickerActivity extends AppCompatActivity {
     CalendarView calView;
     String dateToReturn;
     Button saveDateButton;
-    String date;
 
 
     @Override
@@ -52,7 +51,7 @@ public class DatePickerActivity extends AppCompatActivity {
         this.calView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
-                date = (i2 + "/" + (i1+1) + "/" + i);
+                String date = (i2 + "/" + (i1+1) + "/" + i);
 
                 dateToReturn = date;
 
@@ -75,7 +74,6 @@ public class DatePickerActivity extends AppCompatActivity {
     private void returnResult() {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("date", dateToReturn);
-        resultIntent.putExtra("dateString", date);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
