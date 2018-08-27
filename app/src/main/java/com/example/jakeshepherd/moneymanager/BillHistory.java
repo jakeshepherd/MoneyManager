@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class BillHistory extends AppCompatActivity {
 
@@ -89,7 +90,29 @@ public class BillHistory extends AppCompatActivity {
             billList.add(newBill);
         }
 
+        billList = sortBillList(billList);
+
         return billList;
+    }
+
+    private ArrayList<Bill> sortBillList(ArrayList<Bill> list) {
+        // TODO: improve sort algorithm
+
+        int loopLimit = list.size();
+        for (int loop = 0; loop < loopLimit; loop++) {
+            for (int i = 0; i < (loopLimit - 1); i++) {
+                // 0 equal, <0 date is before argument, >0 date is after argument
+                Bill billOne = list.get(i);
+                Bill billTwo = list.get(i+1);
+                if (billOne.getDueDate().compareTo(billTwo.getDueDate()) > 0) {
+                    list.remove(i);
+                    list.add(i, billTwo);
+                    list.remove(i+1);
+                    list.add(i + 1, billOne);
+                }
+            }
+        }
+        return list;
     }
 
     private ArrayList getBillNames(ArrayList<Bill> billList) {
