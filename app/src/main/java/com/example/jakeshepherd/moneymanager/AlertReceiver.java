@@ -1,6 +1,5 @@
 package com.example.jakeshepherd.moneymanager;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -11,11 +10,6 @@ import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static android.app.Notification.DEFAULT_LIGHTS;
-import static android.app.Notification.DEFAULT_SOUND;
-import static android.app.Notification.DEFAULT_VIBRATE;
-
 
 /**
  * Could potentially use a timestamp for notification ID

@@ -219,4 +219,51 @@
         app:layout_constraintStart_toEndOf="@+id/textView11"
         app:layout_constraintTop_toBottomOf="@+id/PayeeNameField" />
 
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="69dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="69dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="2dp"
+        android:text="Notification interval"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerInterval"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/recurSwitch"
+        app:layout_constraintTop_toBottomOf="@+id/ChangeDateButton" />
+
+    <Spinner
+        android:id="@+id/spinnerInterval"
+        android:layout_width="149dp"
+        android:layout_height="33dp"
+        android:layout_marginBottom="33dp"
+        android:layout_marginEnd="54dp"
+        android:layout_marginLeft="181dp"
+        android:layout_marginRight="54dp"
+        android:layout_marginStart="181dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/PayeeNameField"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="84dp"
+        android:layout_marginEnd="296dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="296dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="46dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
 </android.support.constraint.ConstraintLayout>

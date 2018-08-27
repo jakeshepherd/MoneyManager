@@ -26,4 +26,11 @@
     <string name="enter_new_date">Enter new date:</string>
     <string name="confirm">Confirm</string>
     <string name="no_data_in_database">No Data in Database</string>
+
+    <string-array name="interval_array">
+        <item>Yearly</item>
+        <item>Monthly</item>
+        <item>Weekly</item>
+        <item>Daily</item>
+    </string-array>
 </resources>

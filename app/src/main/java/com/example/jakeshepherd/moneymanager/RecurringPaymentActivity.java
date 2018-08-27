@@ -16,9 +16,12 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,9 +29,11 @@ import android.widget.Toolbar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 public class RecurringPaymentActivity extends AppCompatActivity {
@@ -43,12 +48,16 @@ public class RecurringPaymentActivity extends AppCompatActivity {
     private EditText payeeNameField;
     private EditText editDescription;
     private EditText editNumSplit;
+    private Spinner intervalSpinner;
 
     private BillController billController;
     private String dueDateToSetBill;
     NotificationCompat.Builder mBuilder;
     private static String CHANNEL_ID = "default";
     public boolean recurring = false;
+    String frequency;
+    String[] spinnerList = new String[4];
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +80,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         this.editDescription = findViewById(R.id.editDescription);
         this.editNumSplit = findViewById(R.id.editSplitNum);
         this.recurSwitch = findViewById(R.id.recurSwitch);
+        this.intervalSpinner = findViewById(R.id.spinnerInterval);
 
         addButtonListeners();
     }
@@ -78,6 +88,29 @@ public class RecurringPaymentActivity extends AppCompatActivity {
     private void addButtonListeners() {
         addPaymentButtonListener();
         addChangeDateButtonListener();
+        addDropDown();
+    }
+
+    private void addDropDown(){
+        spinnerList[0] = "Monthly";
+        spinnerList[1] = "Weekly";
+        spinnerList[2] = "Daily";
+        spinnerList[3] = "Yearly";
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerList);
+        intervalSpinner.setAdapter(arrayAdapter);
+
+        intervalSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int dropDownPosition, long l) {
+                frequency = spinnerList[dropDownPosition];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     /**
@@ -93,6 +126,8 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         this.addPaymentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
                 float amount = Float.parseFloat(amountField.getText().toString());
                 String name = payeeNameField.getText().toString();
                 Date dueDate = null;
@@ -221,7 +256,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.DAY_OF_MONTH, day);
 
-        // i think months work like arrays in the calender, ie jan = 0
+        // months work like arrays (jan = 0)
         calendar.set(Calendar.MONTH, month-1);
         calendar.set(Calendar.YEAR, year);
 
@@ -235,17 +270,42 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         /**
          * checks if the switch is on, if so it sets a recurring payment,
          * else set a one time alarm
+         * TODO -- check whether month etc timings work
          */
         if(recurSwitch.isChecked()){
             /**
-             * sends alarm on the day in the calender, then repeats that every month
+             * sends alarm on the day in the calender, then repeats
              */
-            String snackText = String.format("New recurring payment of £%s is due on %s. Payable to %s.", amount, endDate, name);
-            Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            if(frequency.equals("Daily")){
+                String snackText = String.format("New daily payment of £%s is due on %s. Payable to %s.", amount, endDate, name);
+                Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
-            // this should set the alarm to repeat once every month
-            //TODO -- give the user an option to decide how big the interval is
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY*(Calendar.DAY_OF_MONTH), pendingIntent);
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY, pendingIntent);
+            }else if(frequency.equals("Weekly")){
+                String snackText = String.format("New weekly payment of £%s is due on %s. Payable to %s.", amount, endDate, name);
+                Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY*7, pendingIntent);
+            }
+            else if(frequency.equals("Monthly")){
+                String snackText = String.format("New monthly payment of £%s is due on %s. Payable to %s.", amount, endDate, name);
+                Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY*calendar.getActualMaximum(Calendar.DAY_OF_MONTH), pendingIntent);
+            }else if(frequency.equals("Yearly")){
+                String snackText = String.format("New yearly payment of £%s is due on %s. Payable to %s.", amount, endDate, name);
+                Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY*365, pendingIntent);
+            }else{
+                String snackText = String.format("Error");
+                Snackbar.make(view, snackText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+
         }else{
             /**
              * below can be un-commented to send a notifications as soon as payment is added
