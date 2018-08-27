@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DatePickerActivity extends AppCompatActivity {
@@ -21,12 +23,14 @@ public class DatePickerActivity extends AppCompatActivity {
     String dateToReturn;
     Button saveDateButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_date_picker);
 
         dateToReturn = new Date().toString();
+
         setupCalendarView();
         setupSaveButton();
 
