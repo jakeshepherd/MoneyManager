@@ -19,21 +19,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Locale;
 
 public class RecurringPaymentActivity extends AppCompatActivity {
@@ -52,9 +47,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
 
     private BillController billController;
     private String dueDateToSetBill;
-    NotificationCompat.Builder mBuilder;
     private static String CHANNEL_ID = "default";
-    public boolean recurring = false;
     String frequency;
     String[] spinnerList = new String[4];
 
@@ -107,9 +100,7 @@ public class RecurringPaymentActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
     }
 
@@ -127,7 +118,6 @@ public class RecurringPaymentActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
                 float amount = Float.parseFloat(amountField.getText().toString());
                 String name = payeeNameField.getText().toString();
                 Date dueDate = null;
@@ -135,31 +125,13 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                 int billSplitNum = Integer.parseInt(editNumSplit.getText().toString());
 
                 try {
-                    /**
-                     * this should convert the string dueDate to a nice formatted Date dueDate...
-                     */
                     dueDate = (new SimpleDateFormat("dd/MM/yyyy", Locale.UK)).parse(dueDateToSetBill);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
                 if (amount != 0 && !name.equals("") && dueDate != null && billSplitNum != 0 && !description.equals("")) {
-                    Bill newBill = new Bill(amount, name, dueDate);
-
-                    System.out.println("Due: " + dueDate.toString());
-                    db.insertData(name, amount, String.valueOf(dueDate), billSplitNum, description);
-
-                    billController.addBill(newBill);
-                    if (checkIfUserWantsToEmail()) {
-                        notifyPeople(newBill);
-                    }
-
-                    billController.getBillsDueToday();
-
-                    setAlarm(view, name, amount, dueDateToSetBill, billSplitNum, description);
-
-                    Intent homeScreen = new Intent(getBaseContext(), MainActivity.class);
-                    //startActivity(homeScreen);
+                    addBill(amount, name, dueDate, billSplitNum, description, view);
                 } else {
                     boolean amountIsNull = (amount == 0);
                     boolean dateIsNull = (dueDate == null);
@@ -172,6 +144,25 @@ public class RecurringPaymentActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void addBill(float amount, String name, Date dueDate, int billSplitNum, String description, View view){
+
+        Bill newBill = new Bill(amount, name, dueDate);
+        System.out.println("Due: " + dueDate.toString());
+        db.insertData(name, amount, String.valueOf(dueDate), billSplitNum, description);
+        billController.addBill(newBill);
+        if (checkIfUserWantsToEmail()) {
+            notifyPeople(newBill);
+        }
+        billController.getBillsDueToday();
+
+        // TODO could use interval to send the snacktext on the homescreen, think it would be better for the user
+        String interval = setAlarm(view, name, amount, dueDateToSetBill, billSplitNum, description);
+
+        Intent homeScreen = new Intent(getBaseContext(), MainActivity.class);
+        homeScreen.putExtra("intervalSize", interval);
+        startActivity(homeScreen);
     }
 
     private boolean checkIfUserWantsToEmail() {
@@ -231,9 +222,9 @@ public class RecurringPaymentActivity extends AppCompatActivity {
 
     /**
      * setAlarm sends off an alarm at a given time that is received by AlertReceiver and will then show a notification.
-     * TODO get it to send the alert on the actual date that has been set.
+     * TODO add a time picker so that the user can choose what time bill is due
      */
-    public void setAlarm(View view, String name, float amount, String endDate, int billSplitNum, String description){
+    public String setAlarm(View view, String name, float amount, String endDate, int billSplitNum, String description){
         String[] individualComponents = endDate.split("/");
         int day = Integer.parseInt(individualComponents[0]);
         int month = Integer.parseInt(individualComponents[1]);
@@ -260,11 +251,8 @@ public class RecurringPaymentActivity extends AppCompatActivity {
         calendar.set(Calendar.MONTH, month-1);
         calendar.set(Calendar.YEAR, year);
 
-        /**
-         * doesnt work with time -- not even sure if it works with the date etc properly yet...
-         */
-        calendar.set(Calendar.HOUR_OF_DAY, 13);
-        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 15);
+        calendar.set(Calendar.MINUTE, 18);
         calendar.set(Calendar.SECOND, 0);
 
         /**
@@ -308,12 +296,14 @@ public class RecurringPaymentActivity extends AppCompatActivity {
 
         }else{
             /**
-             * below can be un-commented to send a notifications as soon as payment is added
+             * sends notification on single day that bill is due
              */
-            long alertTime = new GregorianCalendar().getTimeInMillis()+1000;
-            alarmManager.set(AlarmManager.RTC_WAKEUP, alertTime, PendingIntent.getBroadcast(this, 1,
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), PendingIntent.getBroadcast(this, 1,
                     alertIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+            frequency = "Single";
         }
+
+        return frequency;
     }
 
     /**

@@ -14,10 +14,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Could potentially use a timestamp for notification ID
  */
+
+/**
+ * TODO -- app will only send a notification for the most recent bill that has been added...
+ */
 public class AlertReceiver extends BroadcastReceiver{
     private final static AtomicInteger c = new AtomicInteger(0);
     private static String CHANNEL_ID = "default";
-
 
     /**
      * when the alarm goes off, a notification is created and sent to the user.
@@ -30,8 +33,14 @@ public class AlertReceiver extends BroadcastReceiver{
         int billSplitNum = intent.getIntExtra("billSplitNum", 0);
         String description = intent.getStringExtra("billDescription");
 
-        createNotification(context, "You have an upcoming bill...", "You owe " + name + " £" + amount + " on " + billDate +
+        if(billSplitNum>1){
+            createNotification(context, "You have an upcoming bill...", "You owe " + name + " £" + amount + " today " +
                     " split between " + billSplitNum + " people.");
+        }else{
+            createNotification(context, "You have an upcoming bill...", "You owe " + name + " £" + amount + " today " +
+                    " split between " + billSplitNum + " person.");
+        }
+
     }
 
     public static int getID() {
